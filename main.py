@@ -4,7 +4,6 @@ import time
 
 screen = display.Screen(30, 20, True)
 sprite = ["0 ██%0 ██€",0,0]
-sprite_2 = ["1 █%0 ███€", 0,5]
 
 x_velocity = 1
 y_velocity = 0
@@ -18,7 +17,6 @@ while True:
         break
     
     screen.add_sprite(sprite)
-    screen.add_sprite(sprite_2)
     screen.show()
     screen.clear()
     if x_velocity != 0:
