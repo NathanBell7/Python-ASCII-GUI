@@ -106,7 +106,11 @@ class Screen:
     #TODO Only works on windows atm, add linux support
     def get_key_pressed(self):
         if msvcrt.kbhit():
-            return bytes.decode(msvcrt.getch())
+            try:
+                return bytes.decode(msvcrt.getch())
+            except UnicodeDecodeError:
+                return None
+        return None
         
 
     def end_screen(self):
