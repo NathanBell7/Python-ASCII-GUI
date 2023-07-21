@@ -56,7 +56,7 @@ class Screen:
             self.display[pos] = self.empty_background_row
             pos += 1
 
-    #TODO Make it so a sprite that would fall off edge of screen does not crash program
+    
     def add_sprite(self, sprite):
         pointer = 0
         sprite_string = sprite[0]
@@ -86,7 +86,8 @@ class Screen:
                     if sprite_string[pointer] == "€":
                         adding_sprite = False
                     pointer += 1
-            self.display[y_offset] = self.display[y_offset][0:x_offset+offset] + pointer_buffer + self.empty_background_row[x_offset+offset+len(pointer_buffer):]
+            if y_offset < len(self.display):
+                self.display[y_offset] = self.display[y_offset][0:x_offset+offset] + pointer_buffer + self.empty_background_row[x_offset+offset+len(pointer_buffer):]
             y_offset += 1
 
     def start_frame(self):
