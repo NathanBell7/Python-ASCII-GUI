@@ -87,7 +87,7 @@ class Screen:
                         adding_sprite = False
                     pointer += 1
             if y_offset < len(self.display):
-                self.display[y_offset] = self.display[y_offset][0:x_offset+offset] + pointer_buffer + self.empty_background_row[x_offset+offset+len(pointer_buffer):]
+                self.display[y_offset] = self.display[y_offset][0:x_offset+offset] + pointer_buffer +  self.display[y_offset][x_offset+offset+2:]
             y_offset += 1
 
     def start_frame(self):
