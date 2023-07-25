@@ -251,7 +251,7 @@ if __name__ == "__main__":
         if check_collision:
             player.delete_bullet(check_collision[0])
             enemies.delete_enemy(check_collision[1])
-            score += 1
+            score += 100
             if len(enemies.get_enemies()) == 0:
                 enemies.enemies_fill(12)
                 enemies.decrease_move_counter_max()
