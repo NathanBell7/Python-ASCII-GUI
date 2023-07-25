@@ -1,4 +1,4 @@
-from os import system
+import os
 import cursor
 import time
 import msvcrt
@@ -17,7 +17,9 @@ class Screen:
         self.FPS = FPS
         self.time_per_frame = 1/self.FPS
         self.timer = 0
-        system("clear")
+        self.terminal_width = os.get_terminal_size().columns
+        self.terminal_height = os.get_terminal_size().lines
+        os.system("clear")
         cursor.hide()
         print(" ")
 
@@ -26,7 +28,7 @@ class Screen:
             self.boundary_string_bottom += "─"
             self.empty_background_row += " "
         if self.border == True:
-            for i in range(self.height + 2):
+            for i in range(self.height + 3):
                 self.return_string += "\033[A"
         else:
             for i in range(self.height + 1):
@@ -40,15 +42,33 @@ class Screen:
 
 
     def show(self):
+        new_terminal_width = os.get_terminal_size().columns
+        if new_terminal_width != self.terminal_width:
+            os.system("clear")
+            print(" ")
+            self.terminal_width = new_terminal_width
+
+        new_terminal_height = os.get_terminal_size().lines
+        if new_terminal_height != self.terminal_height:
+            os.system("clear")
+            print(" ")
+            self.terminal_height = new_terminal_height
+
         if self.border != True:
-            for i in self.display:
-                print(i)
-            print(" ", self.return_string)
+            for i in range(len(self.display)):
+                print(self.display[i][:self.terminal_width])
+                if i >= self.terminal_height - 3:
+                    break
+            print(self.return_string)
         else:
-            print(self.boundary_string_top)
-            for i in self.display:
-                print("│" + i[:self.width] + "│")
-            print(self.boundary_string_bottom + self.return_string)
+            print(self.boundary_string_top[:self.terminal_width])
+            for i in range(len(self.display)):
+                print(("│" + self.display[i][:self.width] + "│")[:self.terminal_width])
+                if i >= self.terminal_height - 5:
+                    break
+            print(self.boundary_string_bottom[:self.terminal_width])
+            print(self.return_string[:self.terminal_height*5])
+
 
     def clear(self):
         pos = 0
@@ -90,8 +110,10 @@ class Screen:
                 self.display[y_offset] = self.display[y_offset][0:x_offset+offset] + pointer_buffer +  self.display[y_offset][x_offset+offset+len(pointer_buffer):]
             y_offset += 1
 
+
     def start_frame(self):
         self.timer = time.perf_counter()
+
 
     def end_frame(self):
         waiting = True
@@ -114,6 +136,6 @@ class Screen:
         
 
     def end_screen(self):
-        system("clear")
+        os.system("clear")
         cursor.show()
 
