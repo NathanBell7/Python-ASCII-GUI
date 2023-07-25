@@ -8,8 +8,6 @@ class Screen:
     def __init__(self, width, height, border, FPS = 120):
         self.width = width
         self.height = height
-        self.boundary_string_top = "┌"
-        self.boundary_string_bottom = "└"
         self.empty_background_row = ""
         self.return_string = ""
         self.display = []
@@ -19,55 +17,28 @@ class Screen:
         self.timer = 0
         self.terminal_width = os.get_terminal_size().columns
         self.terminal_height = os.get_terminal_size().lines
+        for i in range(self.height):
+            self.display.append(self.empty_background_row)
         os.system("clear")
         cursor.hide()
         print(" ")
 
-        for i in range(self.width):
-            self.boundary_string_top += "─"
-            self.boundary_string_bottom += "─"
-            self.empty_background_row += " "
         if self.border == True:
+            self.generate_border()
             for i in range(self.height + 3):
                 self.return_string += "\033[A"
         else:
             for i in range(self.height + 1):
                 self.return_string += "\033[A"
 
-        self.boundary_string_top += "┐        "
-        self.boundary_string_bottom += "┘"
-
-        for i in range(self.height):
-            self.display.append(self.empty_background_row)
-
 
     def show(self):
-        new_terminal_width = os.get_terminal_size().columns
-        if new_terminal_width != self.terminal_width:
-            os.system("clear")
-            print(" ")
-            self.terminal_width = new_terminal_width
-
-        new_terminal_height = os.get_terminal_size().lines
-        if new_terminal_height != self.terminal_height:
-            os.system("clear")
-            print(" ")
-            self.terminal_height = new_terminal_height
-
+        self.update_terminal_height()
+        self.update_terminal_width()
         if self.border != True:
-            for i in range(len(self.display)):
-                print(self.display[i][:self.terminal_width])
-                if i >= self.terminal_height - 3:
-                    break
-            print(self.return_string)
+            self.__print_without_borders()
         else:
-            print(self.boundary_string_top[:self.terminal_width])
-            for i in range(len(self.display)):
-                print(("│" + self.display[i][:self.width] + "│")[:self.terminal_width])
-                if i >= self.terminal_height - 5:
-                    break
-            print(self.boundary_string_bottom[:self.terminal_width])
-            print(self.return_string[:self.terminal_height*5])
+            self.__print_with_borders()
 
 
     def clear(self):
@@ -139,3 +110,47 @@ class Screen:
         os.system("clear")
         cursor.show()
 
+
+    def update_terminal_height(self):
+        new_terminal_height = os.get_terminal_size().lines
+        if new_terminal_height != self.terminal_height:
+            os.system("clear")
+            print(" ")
+            self.terminal_height = new_terminal_height
+
+
+    def update_terminal_width(self):
+        new_terminal_width = os.get_terminal_size().columns
+        if new_terminal_width != self.terminal_width:
+            os.system("clear")
+            print(" ")
+            self.terminal_width = new_terminal_width
+
+
+    def generate_border(self):
+        self.boundary_string_top = "┌"
+        self.boundary_string_bottom = "└"
+        for i in range(self.width):
+            self.boundary_string_top += "─"
+            self.boundary_string_bottom += "─"
+            self.empty_background_row += " "
+        self.boundary_string_top += "┐        "
+        self.boundary_string_bottom += "┘"
+
+
+    def __print_without_borders(self):
+        for i in range(len(self.display)):
+            print(self.display[i][:self.terminal_width])
+            if i >= self.terminal_height - 3:
+                break
+        print(self.return_string)
+
+
+    def __print_with_borders(self):
+        print(self.boundary_string_top[:self.terminal_width])
+        for i in range(len(self.display)):
+            print(("│" + self.display[i][:self.width] + "│")[:self.terminal_width])
+            if i >= self.terminal_height - 5:
+                break
+        print(self.boundary_string_bottom[:self.terminal_width])
+        print(self.return_string[:self.terminal_height*5])
